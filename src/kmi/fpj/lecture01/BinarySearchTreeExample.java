@@ -21,7 +21,7 @@ public class BinarySearchTreeExample {
         SortedLinkedSet<Integer> sls1 = new SortedLinkedSet<>();
 
         sls = sls.add(10).add(5).add(3).add(2).add(7).add(4).add(11);
-        sls1 = sls1.add(3).add(5).add(2).add(18).add(15);
+        sls1 = sls1.add(3).add(5).add(2).add(18).add(15).add(13).remove(13);
 
         System.out.println(sls.toString());
         System.out.println(sls1.toString());

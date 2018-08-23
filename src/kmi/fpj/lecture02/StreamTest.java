@@ -38,6 +38,7 @@ public class StreamTest {
             data.add(i);
     }
 
+
     public static long runTest(Collection<Integer> data, Function<Collection<Integer>, Integer> testFunc) {
         System.gc();
         long total = 0;
@@ -53,17 +54,16 @@ public class StreamTest {
     }
     public static long runTestMin(Collection<Integer> data, Function<Collection<Integer>, Integer> testFunc) {
         System.gc();
-        long temp = 0;
+
         long min = Long.MAX_VALUE;
+
         for (int i = 0; i < 100000; i ++) {
             long ts1 = System.nanoTime();
             testFunc.apply(data);
-
             long ts2 = System.nanoTime();
-            temp = (ts2 - ts1);
-
+            if((ts2 - ts1) < min) min = ts2 - ts1;
         }
-        return temp;
+        return min;
     }
 
     public static void testAndPrint(Collection<Integer>data){
@@ -75,9 +75,9 @@ public class StreamTest {
         long timeParallelStream = runTestMin(data, StreamTest::testParallelStream);
 
         System.out.println(data.getClass());
-        System.out.println("traditional: " + TimeUnit.MILLISECONDS.convert(timeTraditional, TimeUnit.NANOSECONDS));
-        System.out.println("stream:      " + TimeUnit.MILLISECONDS.convert(timeStream,TimeUnit.NANOSECONDS));
-        System.out.println("p. stream:   " + TimeUnit.MILLISECONDS.convert(timeParallelStream,TimeUnit.NANOSECONDS));
+        System.out.println("traditional: " + timeTraditional);
+        System.out.println("stream:      " + timeStream);
+        System.out.println("p. stream:   " + timeParallelStream);
         System.out.println();
 
 
@@ -94,7 +94,7 @@ public class StreamTest {
         data = new TreeSet<>();
         testAndPrint(data);
 
-
+/*
         InputStream inputStream = new URL("ftp://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz").openStream();
 
         GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
@@ -102,7 +102,7 @@ public class StreamTest {
         String nasa = bufferedReader.lines().limit(100000).collect(Collectors.joining("\n"));
 
 
-/*
+
         Stream.of(nasa.split("\n"))
                 .map(e -> e.split(" ")[0])
                 .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
@@ -124,14 +124,14 @@ public class StreamTest {
                 .map(e -> e.split(" ")[0])
                 .distinct()
                 .forEach(System.out::println);
-*/
+
         Stream.of(nasa.split("\n"))
                 .map(line -> line.substring(0,line.indexOf("[") + 3))
                 .distinct()
                 .collect(Collectors.groupingBy((line -> line.split("\\[")[1]),Collectors.counting()))
                 .entrySet().stream()
                 .forEach(System.out::println);
-
+*/
 
 
     }
