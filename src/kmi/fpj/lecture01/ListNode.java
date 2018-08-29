@@ -9,12 +9,12 @@ public class ListNode<V extends Comparable<V>> {
 
     private final V value;
     private final ListNode<V> nextNode;
-    //private final ListNode<V> prevNode;
+
 
     public ListNode(V value){
         this.value = value;
         this.nextNode = null;
-        //this.prevNode = null;
+
     }
 
     public ListNode(V value, ListNode<V> nextNode){
@@ -39,7 +39,7 @@ public class ListNode<V extends Comparable<V>> {
     public ListNode<V> remove(V remValue){
         int cmp = remValue.compareTo(value);
         if(cmp == 0){
-            //System.out.println("yes");
+
             return nextNode;
         }else{
             return new ListNode<>(value,nextNode.remove(remValue));
@@ -69,11 +69,13 @@ public class ListNode<V extends Comparable<V>> {
 
     }
 
-    public int size(){
-        if(nextNode == null){
-            return 1;
-        }
-        return nextNode.size() +1;
+
+    public V getValue() {
+        return value;
+    }
+
+    public ListNode<V> getNextNode() {
+        return nextNode;
     }
 
     @Override
@@ -81,13 +83,4 @@ public class ListNode<V extends Comparable<V>> {
         return value + " " + nextNode;
     }
 
-    public V get(int index){
-        if(index == 0){
-            return value;
-        }else{
-            if(nextNode == null) throw new NoSuchElementException();
-            return nextNode.get(index - 1);
-        }
-
-    }
-}
+   }

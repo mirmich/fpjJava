@@ -26,7 +26,7 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
     public SortedLinkedSet<T> remove(T value){
         ListNode<T> newFirstNode;
         if(contains(value)){
-            //System.out.println("found");
+
             newFirstNode = firstNode.remove(value);
         }else{
             newFirstNode = firstNode;
@@ -41,22 +41,15 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
 
     public SortedLinkedSet<T> intersect(SortedLinkedSet<T> item){
         SortedLinkedSet<T> intersection = new SortedLinkedSet<>();
-        for(T e : this){
-            if(item.contains(e)){
-                intersection = intersection.add(e);
-            }
-        }
+
+        for(T e : this)
+            if (item.contains(e)) intersection.add(e);
         return intersection;
+
     }
-
-
 
     public void printOut(PrintStream out) {
         if (firstNode != null) firstNode.printOut(out);
-    }
-
-    public ListNode<T> getFirstNode() {
-        return firstNode;
     }
 
     @Override
@@ -64,23 +57,18 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
         return "SortedLinkedSet{" + firstNode + '}';
     }
 
-    public int size(){
-        return firstNode.size();
-    }
 
-    public T get(int index){
-        return firstNode.get(index);
-    }
     public Iterator<T> iterator() {
         return new ListIterator<T>();
     }
 
     private class ListIterator<T> implements Iterator<T> {
-        int size = size();
-        int currentPointer = 0;
+
+        ListNode currentNode = firstNode;
+
 
         public boolean hasNext() {
-            return (currentPointer < size);
+            return currentNode.getNextNode() != null;
         }
 
         public T next() {
@@ -89,9 +77,9 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
                 throw new NoSuchElementException();
             }
 
-            @SuppressWarnings("unchecked")
-            T val = (T) get(currentPointer);
-            currentPointer++;
+
+            T val = (T) currentNode.getValue();
+            currentNode = currentNode.getNextNode();
 
             return val;
         }
