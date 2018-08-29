@@ -83,8 +83,81 @@ public class StreamTest {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static int traditionalTest(String[] nasaLog){
 
+        ArrayList<String> addresses =  new ArrayList<>();
+        int[] dayCount = new int[31];
+        for(String line : nasaLog){
+            String adress = line.split(" ")[0];
+            if(addresses.contains(adress)){
+                continue;
+            }
+            addresses.add(adress);
+            int day = Integer.parseInt(line.split("\\[")[1].substring(0,2));
+
+            dayCount[day]++;
+        }
+
+        return 0;
+    }
+
+    public static void nasaFirst(String[] nasaLines){
+        Stream.of(nasaLines)
+                .map(e -> e.split(" ")[0])
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+    }
+    public static void nasaSecond(String[] nasaLines){
+        Stream.of(nasaLines)
+                .map(e -> e.substring((e.indexOf(":") + 1),(e.indexOf(":") + 3)))
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+    }
+    public static void nasaThirt(String[] nasaLines){
+        Stream.of(nasaLines)
+                .filter(e -> e.split(" ")[e.split(" ").length-2].equals("404"))
+                .map(e -> e.split(" ")[0])
+                .distinct()
+                .forEach(System.out::println);
+
+    }
+    public static int nasaFourth(String[] nasaLines){
+        Stream.of(nasaLines)
+                .map(line -> line.substring(0,line.indexOf("[") + 3))
+                .distinct()
+                .collect(Collectors.groupingBy((line -> line.split("\\[")[1]),Collectors.counting()))
+                .entrySet().stream()
+                .forEach(System.out::println);
+
+        return 0;
+
+    }
+
+    public static long testFourth(String[] data, Function<String[], Integer> testFunc){
+        System.gc();
+        long total = 0;
+
+        for (int i = 0; i < 1000; i ++) {
+            long ts1 = System.nanoTime();
+            testFunc.apply(data);
+
+            long ts2 = System.nanoTime();
+            total += (ts2 - ts1);
+        }
+        return total;
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        /*
         Collection<Integer> data = new ArrayList<>();
         testAndPrint(data);
         data = new LinkedList<>();
@@ -93,44 +166,26 @@ public class StreamTest {
         testAndPrint(data);
         data = new TreeSet<>();
         testAndPrint(data);
-
+    */
 
         InputStream inputStream = new URL("ftp://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz").openStream();
 
         GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gzipInputStream));
         String nasa = bufferedReader.lines().limit(100000).collect(Collectors.joining("\n"));
+        String[] nasaLines = nasa.split("\n");
 
 
-/*
-        Stream.of(nasa.split("\n"))
-                .map(e -> e.split(" ")[0])
-                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
-                .entrySet().stream()
-                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-                .limit(5)
-                .forEach(System.out::println);
+        System.out.println(testFourth(nasaLines, nasaLog -> traditionalTest(nasaLog)));
+        System.out.println(testFourth(nasaLines, nasaLog -> nasaFourth(nasaLog)));
 
-        Stream.of(nasa.split("\n"))
-                .map(e -> e.substring((e.indexOf(":") + 1),(e.indexOf(":") + 3)))
-                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))
-                .entrySet().stream()
-                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
-                .limit(5)
-                .forEach(System.out::println);
 
-        Stream.of(nasa.split("\n"))
-                .filter(e -> e.split(" ")[e.split(" ").length-2].equals("404"))
-                .map(e -> e.split(" ")[0])
-                .distinct()
-                .forEach(System.out::println);
-*/
-        Stream.of(nasa.split("\n"))
-                .map(line -> line.substring(0,line.indexOf("[") + 3))
-                .distinct()
-                .collect(Collectors.groupingBy((line -> line.split("\\[")[1]),Collectors.counting()))
-                .entrySet().stream()
-                .forEach(System.out::println);
+
+
+
+        //System.out.println(nasa);
+
+        //System.out.println(endTime-startTime);
 
 
 
