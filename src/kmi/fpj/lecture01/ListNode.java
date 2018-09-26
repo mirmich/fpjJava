@@ -59,17 +59,6 @@ public class ListNode<V extends Comparable<V>> {
 
     }
 
-
-    public void printOut(PrintStream out){
-
-
-        out.print(value + " ");
-
-        if (nextNode != null) nextNode.printOut(out);
-
-    }
-
-
     public V getValue() {
         return value;
     }

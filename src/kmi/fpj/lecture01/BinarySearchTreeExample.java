@@ -11,23 +11,17 @@ public class BinarySearchTreeExample {
 
 
 
-         bst = bst.put(35, "baz").put(5, "qux").put(15, "quux");
-
+        bst = bst.put(35, "baz").put(5, "qux").put(15, "quux");
+        System.out.println("BinarySearchTree iterator");
         for (Integer e : bst){
             System.out.println(e);
         }
 
         SortedLinkedSet<Integer> sls = new SortedLinkedSet<>();
-        SortedLinkedSet<Integer> sls1 = new SortedLinkedSet<>();
+        sls = sls.add(10).add(5).add(3).add(2).add(7).add(4).add(11).remove(4);
+        System.out.println(sls.contains(4));
 
-        sls = sls.add(10).add(5).add(3).add(2).add(7).add(4).add(11);
-        sls1 = sls1.add(3).add(5).add(2).add(18).add(15).add(13).remove(13);
-
-        System.out.println(sls.toString());
-        System.out.println(sls1.toString());
-        System.out.println(sls.intersect(sls1).toString());
-
-
+        System.out.println("SortedLinkedSet iterator");
         for(Integer i : sls){
             System.out.println(i);
         }

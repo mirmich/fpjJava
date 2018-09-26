@@ -16,6 +16,7 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
     public SortedLinkedSet(){
         firstNode = null;
     }
+
     public SortedLinkedSet<T> add(T value){
         ListNode<T> newFirstNode;
         if(firstNode == null) newFirstNode = new ListNode<>(value);
@@ -48,9 +49,7 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
 
     }
 
-    public void printOut(PrintStream out) {
-        if (firstNode != null) firstNode.printOut(out);
-    }
+
 
     @Override
     public String toString() {
@@ -68,7 +67,7 @@ public class SortedLinkedSet<T extends Comparable<T>> implements Iterable<T>  {
 
 
         public boolean hasNext() {
-            return currentNode.getNextNode() != null;
+            return currentNode != null;
         }
 
         public T next() {

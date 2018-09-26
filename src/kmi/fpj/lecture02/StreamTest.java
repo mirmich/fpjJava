@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,17 +52,17 @@ public class StreamTest {
     }
     public static long runTestMin(Collection<Integer> data, Function<Collection<Integer>, Integer> testFunc) {
         System.gc();
-        long temp = 0;
+
         long min = Long.MAX_VALUE;
         for (int i = 0; i < 100000; i ++) {
             long ts1 = System.nanoTime();
             testFunc.apply(data);
-
             long ts2 = System.nanoTime();
-            temp = (ts2 - ts1);
+
+            min = Math.min(ts2 - ts1,min);
 
         }
-        return temp;
+        return min;
     }
 
     public static void testAndPrint(Collection<Integer>data){
@@ -75,31 +74,15 @@ public class StreamTest {
         long timeParallelStream = runTestMin(data, StreamTest::testParallelStream);
 
         System.out.println(data.getClass());
-        System.out.println("traditional: " + TimeUnit.MILLISECONDS.convert(timeTraditional, TimeUnit.NANOSECONDS));
-        System.out.println("stream:      " + TimeUnit.MILLISECONDS.convert(timeStream,TimeUnit.NANOSECONDS));
-        System.out.println("p. stream:   " + TimeUnit.MILLISECONDS.convert(timeParallelStream,TimeUnit.NANOSECONDS));
+        System.out.println("traditional: " + timeTraditional);
+        System.out.println("stream:      " + timeStream);
+        System.out.println("p. stream:   " + timeParallelStream);
         System.out.println();
 
 
     }
 
-    public static int traditionalTest(String[] nasaLog){
 
-        ArrayList<String> addresses =  new ArrayList<>();
-        int[] dayCount = new int[31];
-        for(String line : nasaLog){
-            String adress = line.split(" ")[0];
-            if(addresses.contains(adress)){
-                continue;
-            }
-            addresses.add(adress);
-            int day = Integer.parseInt(line.split("\\[")[1].substring(0,2));
-
-            dayCount[day]++;
-        }
-
-        return 0;
-    }
 
     public static void nasaFirst(String[] nasaLines){
         Stream.of(nasaLines)
@@ -141,6 +124,25 @@ public class StreamTest {
 
     }
 
+    public static int traditionalNasaFourth(String[] nasaLog){
+
+        ArrayList<String> addresses =  new ArrayList<>();
+        int[] dayCount = new int[31];
+        for(String line : nasaLog){
+            String adress = line.split(" ")[0];
+            if(addresses.contains(adress)){
+                continue;
+            }
+            addresses.add(adress);
+            int day = Integer.parseInt(line.split("\\[")[1].substring(0,2));
+
+            dayCount[day]++;
+        }
+
+        return 0;
+
+    }
+
     public static long testFourth(String[] data, Function<String[], Integer> testFunc){
         System.gc();
         long total = 0;
@@ -166,7 +168,8 @@ public class StreamTest {
         testAndPrint(data);
         data = new TreeSet<>();
         testAndPrint(data);
-    */
+        */
+
 
         InputStream inputStream = new URL("ftp://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz").openStream();
 
@@ -175,8 +178,11 @@ public class StreamTest {
         String nasa = bufferedReader.lines().limit(100000).collect(Collectors.joining("\n"));
         String[] nasaLines = nasa.split("\n");
 
+        nasaFourth(nasaLines);
 
-        System.out.println(testFourth(nasaLines, nasaLog -> traditionalTest(nasaLog)));
+
+
+        System.out.println(testFourth(nasaLines, nasaLog -> traditionalNasaFourth(nasaLog)));
         System.out.println(testFourth(nasaLines, nasaLog -> nasaFourth(nasaLog)));
 
 
