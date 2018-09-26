@@ -61,7 +61,8 @@ public class StreamTest {
             long ts1 = System.nanoTime();
             testFunc.apply(data);
             long ts2 = System.nanoTime();
-            if((ts2 - ts1) < min) min = ts2 - ts1;
+            if((ts2 - ts1) < min)
+                min = ts2 - ts1;
         }
         return min;
     }
